@@ -14,25 +14,28 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from "react-native-responsive-screen";
+
+  import { useFocusEffect } from "@react-navigation/native";
+  import { useCallback } from "react";
   
   export default function MyRecipeScreen() {
     const navigation = useNavigation();
     const [recipes, setrecipes] = useState([]);
     const [loading, setLoading] = useState(true);
-  
-    useEffect(() => {
-      
 
+    useFocusEffect(
+    useCallback(() => {
         const fetchrecipes = async () => {
-            const storedRecipes = await AsyncStorage.getItem("customrecipes");
-            if (storedRecipes) {
-              setrecipes(JSON.parse(storedRecipes));
-            }
-            setLoading(false); // Loading is complete
-          };
-  
-      fetchrecipes();
-    }, []);
+        const storedRecipes = await AsyncStorage.getItem("customrecipes");
+        if (storedRecipes) {
+            setrecipes(JSON.parse(storedRecipes));
+        }
+        setLoading(false);
+        };
+
+        fetchrecipes();
+    }, [])
+    );
   
     const handleAddrecipe = () => {
         navigation.navigate("RecipesFormScreen");
@@ -79,15 +82,15 @@ import {
                 <View key={index} style={styles.recipeCard} testID="recipeCard">
                   <TouchableOpacity testID="handlerecipeBtn" onPress={() => handlerecipeClick(recipe)}>
 
-                  {recipe.recipeImage && (
+                  {recipe.image && (
                     <Image
-                      source={{ uri: recipe.recipeImage }}
+                      source={{ uri: recipe.image }}
                       style={styles.recipeImage}
                     />
                   )}
-                    <Text style={styles.recipeTitle}>{recipe.recipeName}</Text>
+                    <Text style={styles.recipeTitle}>{recipe.title}</Text>
                     <Text style={styles.recipeDescription} testID="recipeDescp">
-                    {recipe.cookingDescription?.substring(0, 50) + "..."}
+                    {recipe.description?.substring(0, 50) + "..."}
                     </Text>
                   </TouchableOpacity>
   
